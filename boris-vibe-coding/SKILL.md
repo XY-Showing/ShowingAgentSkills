@@ -44,6 +44,17 @@ Session start → Plan Mode → iterate until plan is good → switch to auto-ac
 
 Never jump directly to code. Back-and-forth in Plan Mode costs nothing compared to rework.
 
+For complex sessions, create two lightweight files at session start:
+
+```
+task_plan.md   → goals, phases, current step
+findings.md    → research notes, API docs, decision rationale
+```
+
+Claude reads these before every major decision — not relying on context memory. Delete or archive when session ends.
+
+**Why this matters:** CLAUDE.md = permanent team memory across sessions. `task_plan.md` = working memory within a session. Long sessions drift without it — Claude forgets the original goal by sub-task 8.
+
 **Baseline violation:** Jumping straight to implementation to "save time."
 
 ### 3. Shared CLAUDE.md (team memory)
@@ -70,12 +81,24 @@ Write code → start dev server → Claude opens browser → tests UI/UX
 → if wrong: fix code → reload → re-test → repeat until it actually works
 ```
 
+**Use Recon-First pattern** — inspect before interacting:
+
+```
+1. browser_snapshot()              ← capture full page structure
+2. wait for load state             ← ensure dynamic content (React/Vue) is rendered
+3. analyze snapshot, locate refs   ← find exact target elements
+4. browser_click / browser_type    ← interact with accurate targets
+```
+
+Never click blind. Jumping straight to interaction without a snapshot causes selector failures and wastes retry cycles.
+
 Implementation with Playwright MCP (already configured):
 1. Start dev server in background (`npm run dev &` or equivalent)
-2. Use `browser_navigate` → `localhost:3000`
-3. Use `browser_snapshot` (accessibility tree) or `browser_take_screenshot`
-4. Interact: `browser_click`, `browser_type`, `browser_fill_form`
-5. If UI is wrong → fix code → `browser_navigate` again → verify
+2. `browser_navigate` → `localhost:3000`
+3. `browser_snapshot` → read structure, find element refs
+4. `browser_wait_for` → confirm dynamic content loaded
+5. `browser_click` / `browser_type` / `browser_fill_form` with known refs
+6. If UI is wrong → fix code → `browser_navigate` again → repeat from step 3
 
 **Do not stop until the browser confirms it works.**
 
@@ -98,9 +121,11 @@ Wrong answers = rework. Rework cost > token cost.
 
 | Situation | Action |
 |-----------|--------|
-| Starting new feature | Plan Mode first, always |
+| Starting new feature | Plan Mode + task_plan.md first |
 | Multiple independent tasks | Parallel fleet sessions |
+| Long/complex session | Create task_plan.md + findings.md |
 | Claude says "it's done" | Browser verification loop |
+| Browser element not found | Recon-first: snapshot before interacting |
 | Claude makes a mistake | Document in CLAUDE.md immediately |
 | Speed vs accuracy | Always choose accuracy (Opus) |
 | Quick PR | Plan Mode → auto-accept → 1-shot → browser verify |
@@ -112,6 +137,8 @@ Wrong answers = rework. Rework cost > token cost.
 | Serial sessions for independent tasks | Open parallel tabs, assign immediately |
 | Skipping Plan Mode for "small" changes | Small changes cause the most rework |
 | Trusting `npm run build` success as verification | Open the browser and click through it |
+| Clicking elements without snapshot first | Recon-first: snapshot → locate → interact |
+| Goal drift in long sessions | Create task_plan.md at session start |
 | Noting mistakes mentally | Write to CLAUDE.md before moving on |
 | Using fast model to save time | Wrong answer is slower than slow answer |
 
@@ -122,5 +149,7 @@ Wrong answers = rework. Rework cost > token cost.
 - "I'll add it to CLAUDE.md later"
 - "This is too simple for Plan Mode"
 - "Using Sonnet for this is fine"
+- "I'll just click around and see what happens" (browser verification without snapshot)
+- "I remember the plan, I don't need task_plan.md"
 
 **All of these have caused rework. Follow the workflow.**
