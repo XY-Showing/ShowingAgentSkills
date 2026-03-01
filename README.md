@@ -1,15 +1,15 @@
 # ShowingAgentSkills
 
-A curated collection of Claude Code skills built from real-world developer workflows — not AI-generated templates.
+A curated collection of Claude Code skills built from real-world developer and researcher workflows — not AI-generated templates.
 
 ## Philosophy
 
-Most public skill repositories focus on **tool execution**: run Playwright, generate PDFs, push to GitHub. This repo focuses on **methodology**: *how* to think about and structure AI-assisted development sessions.
+Most public skill repositories focus on **tool execution**: run Playwright, generate PDFs, call APIs. This repo focuses on **methodology**: *how* to think about and structure AI-assisted work sessions.
 
 Skills here are:
-- Derived from proven workflows used by actual practitioners
+- Derived from proven workflows used by actual practitioners (cited sources)
 - Tested with RED-GREEN baselines before publishing (writing-skills TDD standard)
-- Complementary to existing skill ecosystems, not duplicative
+- Filling gaps not covered by existing public skill ecosystems
 
 ---
 
@@ -25,8 +25,6 @@ Boris Cherny, head of Claude Code at Anthropic, ships 100 PRs/week with a "surpr
 
 > "Engineering discipline applied to AI-driven development."
 
-Vibe coding ≠ casual prompting. Boris's approach treats AI as **distributed cognitive capacity** — a fleet of parallel agents, each with a clear mandate, operating under strict verification discipline.
-
 | Principle | What it means |
 |-----------|---------------|
 | **Fleet, not chat** | Run 10–15 Claude sessions in parallel. Serial is waste. |
@@ -37,7 +35,7 @@ Vibe coding ≠ casual prompting. Boris's approach treats AI as **distributed co
 
 #### What makes it different from existing skills
 
-After surveying 380+ skills across VoltAgent, ComposioHQ, superpowers-lab, daymade, Jeffallan, and the official Anthropic skills repo — no equivalent methodology skill exists.
+After surveying 380+ skills across VoltAgent, ComposioHQ, superpowers-lab, daymade, Jeffallan, and the official Anthropic skills repo — no equivalent methodology skill exists. Browser tool skills (lackeyjb/playwright-skill, ComposioHQ/webapp-testing) cover execution but not the surrounding discipline.
 
 | Existing skills | This skill |
 |-----------------|------------|
@@ -46,26 +44,11 @@ After surveying 380+ skills across VoltAgent, ComposioHQ, superpowers-lab, dayma
 | Parallel execution as a feature | Parallel fleet as a *philosophy* |
 | Browser as a test runner | Browser as the **only** source of truth |
 
-Browser tool skills (lackeyjb/playwright-skill, ComposioHQ/webapp-testing) cover execution but not the surrounding discipline.
-
 #### Two enhancements over Boris's original workflow
 
-**1. Session persistence files** (inspired by planning-with-files)
+**1. Session persistence files** — `task_plan.md` handles within-session working memory. Long sessions drift without it.
 
-CLAUDE.md handles cross-session team memory. `task_plan.md` handles within-session working memory. Long sessions drift without a persistent reference.
-
-```
-task_plan.md   → session goals, phases, current step
-findings.md    → research notes, decisions, API docs
-```
-
-**2. Recon-First browser verification** (inspired by ComposioHQ/webapp-testing)
-
-Don't click blind. Snapshot the DOM first, locate element refs, then interact.
-
-```
-browser_snapshot() → wait_for_load_state() → locate refs → interact
-```
+**2. Recon-First browser verification** — Snapshot DOM first, locate element refs, then interact. One accurate interaction beats five failed attempts.
 
 #### Install
 
@@ -74,7 +57,58 @@ git clone https://github.com/XY-Showing/ShowingAgentSkills.git /tmp/showing-skil
 cp -r /tmp/showing-skills/boris-vibe-coding ~/.claude/skills/
 ```
 
-Then invoke with `/boris-vibe-coding` in any Claude Code session.
+Invoke with `/boris-vibe-coding` in any Claude Code session.
+
+---
+
+### `vibe-research`
+
+**The only public methodology skill for AI-assisted academic research workflows.**
+
+Generalizes the boris-vibe-coding philosophy to research: parallel literature search, pre-registration mindset, ground-truth verification against raw data, and a persistent research knowledge base. Grounded in a survey of 380+ existing tools and skills (PaperQA2, Storm, AIDE, AI Scientist, GPT Researcher, and the full Claude skills ecosystem).
+
+#### Core Philosophy
+
+> "The data is the browser. Never trust Claude's summary — verify against the source."
+
+| Principle | Research equivalent |
+|-----------|-------------------|
+| **Fleet, not chat** | Parallel agents per keyword cluster / database |
+| **Plan first** | `research_plan.md` with metrics defined before experiments |
+| **Knowledge base** | `RESEARCH.md` — dead ends, verified findings, key papers |
+| **Ground truth verification** | Raw data, logs, original PDFs — never Claude's interpretation |
+| **Accuracy over speed** | Opus + thinking for experimental design and result interpretation |
+
+#### What makes it different from existing tools
+
+After surveying the full landscape of AI research tools:
+
+| Existing tools | This skill |
+|----------------|------------|
+| GPT Researcher, Storm | Synthesis and writing, not session methodology |
+| PaperQA2 | Precise citation RAG, not workflow discipline |
+| AIDE | ML experiment search, not research planning |
+| AI Scientist | Automated pipeline, not human-in-loop methodology |
+| `/20-ml-paper-writing` | Paper structure, not research process |
+
+No existing skill or tool addresses: parallel fleet search across keyword clusters, pre-registration mindset enforced at session start, negative result encoding to prevent repeated failures, or EDA-first verification discipline.
+
+#### Three research-specific additions beyond vibe-coding
+
+**1. Citation verification protocol** — Claude hallucinates citations. Every paper must be verified to page level before use.
+
+**2. EDA-First analysis** — Plot distributions, inspect failure cases, check for data leakage *before* running statistics or reporting metrics.
+
+**3. RESEARCH.md knowledge base** — Negative results encoded immediately. Dead ends documented prevent weeks of repeated work by you or collaborators.
+
+#### Install
+
+```bash
+git clone https://github.com/XY-Showing/ShowingAgentSkills.git /tmp/showing-skills
+cp -r /tmp/showing-skills/vibe-research ~/.claude/skills/
+```
+
+Invoke with `/vibe-research` in any Claude Code session.
 
 ---
 
